@@ -16,6 +16,7 @@ module.exports = {
     ethereumSepolia: {
       url: ETHEREUM_SEPOLIA_RPC_URL,
       accounts: [PRIVATE_KEY],
+      gas: 3000000,
     },
     polygonMumbai: {
       url: POLYGON_MUMBAI_RPC_URL,
