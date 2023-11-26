@@ -17,3 +17,12 @@ hh setup-receiver --network mumbai
 # 2. setup sender contract in each other chains, (ex: ethereum, avalanche, bnb ...) 
 hh setup-send --all true
 ```
+
+## Memo
+```bash
+# how to compile contracts with hardhat
+hh compile
+
+# how to run script file in scripts directory
+hh run scripts/deploy.js --network <chain-name in networks>
+```
