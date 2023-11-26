@@ -1,31 +1,59 @@
-const path = require("path");
-const envPath = path.join(__dirname, "./.env");
-
-require("dotenv").config({ path: envPath });
 require("@nomicfoundation/hardhat-toolbox");
+require("./tasks");
+const { networks } = require("./networks");
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const ETHEREUM_SEPOLIA_RPC_URL = process.env.ETHEREUM_SEPOLIA_RPC_URL;
-const AVALANCHE_FUJI_RPC_URL = process.env.AVALANCHE_FUJI_RPC_URL;
-const POLYGON_MUMBAI_RPC_URL = process.env.POLYGON_MUMBAI_RPC_URL;
+// TODO: Custom
+const REPORT_GAS =
+  process.env.REPORT_GAS?.toLowerCase() === "true" ? true : false;
+const SOLC_SETTINGS = {
+  optimizer: {
+    enabled: true,
+    runs: 1_000,
+  },
+};
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.19",
+  defaultNetwork: "hardhat",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.19",
+        settings: SOLC_SETTINGS,
+      },
+    ],
+  },
   networks: {
-    ethereumSepolia: {
-      url: ETHEREUM_SEPOLIA_RPC_URL,
-      accounts: [PRIVATE_KEY],
-      gas: 3000000,
+    ...networks,
+  },
+
+  // TODO...
+  etherscan: {
+    // npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
+    // to get exact network names: npx hardhat verify --list-networks
+    apiKey: {
+      sepolia: networks.sepolia.verifyApiKey,
+      avalancheFujiTestnet: networks.fuji.verifyApiKey,
     },
-    polygonMumbai: {
-      url: POLYGON_MUMBAI_RPC_URL,
-      accounts: [PRIVATE_KEY],
-    },
-    avalancheFuji: {
-      url: AVALANCHE_FUJI_RPC_URL,
-      accounts: [PRIVATE_KEY],
-      gas: 6000000,
-    },
+  },
+  gasReporter: {
+    enabled: REPORT_GAS,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+  },
+  contractSizer: {
+    runOnCompile: false,
+    only: [
+      "FunctionsConsumer",
+      "AutomatedFunctionsConsumer",
+      "FunctionsBillingRegistry",
+    ],
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./build/cache",
+    artifacts: "./build/artifacts",
   },
 };
