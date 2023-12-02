@@ -24,14 +24,14 @@ if (!isTestEnvironment && !PRIVATE_KEY) {
 const networks = {
   hardhat: {
     allowUnlimitedContractSize: true,
-    accounts: process.env.PRIVATE_KEY
-      ? [
-          {
-            privateKey: process.env.PRIVATE_KEY,
-            balance: "10000000000000000000000",
-          },
-        ]
-      : [],
+    // accounts: process.env.PRIVATE_KEY
+    //   ? [
+    //       {
+    //         privateKey: process.env.PRIVATE_KEY,
+    //         balance: "10000000000000000000000",
+    //       },
+    //     ]
+    //   : [],
     // copied by fuji
     router: "0x554472a2720e5e7d5d3c817529aba05eed5f82d8",
     chainSelector: "14767482510784806043",
@@ -48,7 +48,7 @@ const networks = {
     router: "0xd0daae2231e9cb96b94c8512223533293c3693bf",
     chainSelector: "16015286601757825753",
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    verifyApiKey: "THIS HAS NOT BEEN SET",
+    verifyApiKey: process.env.ETHEREUM_SEPOLIA_VERIFY_API_KEY || "",
     chainId: 11155111,
     confirmations: DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "ETH",

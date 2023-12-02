@@ -16,6 +16,12 @@ hh setup-receiver --network mumbai
 
 # 2. setup sender contract in each other chains, (ex: ethereum, avalanche, bnb ...) 
 hh setup-send --all true
+
+# 3. faucet at each chains
+
+# 4. transferccip
+
+# 5. polygon
 ```
 
 ## Memo
@@ -25,4 +31,7 @@ hh compile
 
 # how to run script file in scripts directory
 hh run scripts/deploy.js --network <chain-name in networks>
+
+# verify contract
+hh verify --network sepolia <deployed-contract-address> <arg1 arg2 ...>
 ```
