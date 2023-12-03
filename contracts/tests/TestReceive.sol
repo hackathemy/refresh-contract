@@ -81,6 +81,7 @@ contract TestReceive {
     );
 
     // check sender address
+    address funder = abi.decode(receivedMessage.sender, (address)); // abi-decoding of the sender address
 
     // mint a test token to funder
     // ProjectToken testTokenContract = ProjectToken(
@@ -88,7 +89,7 @@ contract TestReceive {
     // );
     // testTokenContract.mint(address(10), mintAmount);
     ProjectToken(payable(projects[latestProjectIndex].tokenAddress)).mint(
-      s_sourceChainSender,
+      funder,
       mintAmount
     );
   }
