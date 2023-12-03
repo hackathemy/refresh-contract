@@ -48,6 +48,11 @@ contract MyProtocol is CCIPReceiver {
     lastReceivedTokenAmount = any2EvmMessage.destTokenAmounts[0].amount;
 
     // mint here
+
+    // Function to mint new tokens, can only be called by the owner
+    // function mint(address account, uint256 amount) external onlyOwner {
+    //   _mint(account, amount);
+    // }
   }
 
   // create a new prject and mint erc20votes
