@@ -67,7 +67,7 @@ const networks = {
     verifyApiKey: "THIS HAS NOT BEEN SET",
     chainId: 43113,
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
-    nativeCurrencySymbol: "AVAX",
+    nativeCurrencySymbol: "MATIC",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
     explorer: (txHash) => {
@@ -80,12 +80,16 @@ const networks = {
     chainSelector: "14767482510784806043",
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    verifyApiKey: "THIS HAS NOT BEEN SET", // https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-verify
-    chainId: 43113,
+    verifyApiKey:
+      process.env.POLYGON_MUMBAI_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
+    chainId: 80001,
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "AVAX",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
+    explorer: (txHash) => {
+      return `https://mumbai.polygonscan.com/tx/${txHash}`;
+    },
   },
 };
 
