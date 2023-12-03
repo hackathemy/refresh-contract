@@ -1,6 +1,9 @@
 //SPDX-License-Identifier: UNLICENSED
-
 pragma solidity ^0.8.19;
+
+/*
+THIS IS ONLY USING FOR TEST. DON'T DEPOLY IN A REAL NETWORK
+*/
 
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import "hardhat/console.sol";
@@ -12,8 +15,6 @@ contract TestReceive {
   address internal immutable s_sourceChainSender =
     0xa0DBD950C5E6F768968135Ab4c055936D5f16CDD;
   address internal immutable t_sourceTokenAddress = address(20);
-
-  // test mint erc20 contract address state
 
   struct Project {
     uint contentIndex;
@@ -59,14 +60,18 @@ contract TestReceive {
     Client.Any2EVMMessage memory receivedMessage = Client.Any2EVMMessage({
       messageId: bytes32("a"),
       sourceChainSelector: DEST_CHAIN_ID,
-      data: abi.encode(1), // 여기에 프로젝트 index가 들어와야 하고
+      data: abi.encode("1"), // 여기에 프로젝트 index가 들어와야 하고
       sender: abi.encode(s_sourceChainSender), // 이게 소스체인에서 보낸 사람의 주소
       destTokenAmounts: tokenAmounts
     });
 
     // check index
     // revert 필요 -> 만약 없는 프로젝트 인덱스를 고른 경우
-    uint receivedProjectIndex = abi.decode(receivedMessage.data, (uint));
+    string memory receivedStringIndex = abi.decode(
+      receivedMessage.data,
+      (string)
+    );
+    uint receivedProjectIndex = stringToUint(receivedStringIndex);
     console.log(
       "Received Project Index: '%s', Its token address: %s",
       receivedProjectIndex,
@@ -133,5 +138,17 @@ contract TestReceive {
 
     // return test message
     return message;
+  }
+
+  function stringToUint(string memory s) public pure returns (uint) {
+    bytes memory b = bytes(s);
+    uint result = 0;
+    for (uint256 i = 0; i < b.length; i++) {
+      uint256 c = uint256(uint8(b[i]));
+      if (c >= 48 && c <= 57) {
+        result = result * 10 + (c - 48);
+      }
+    }
+    return result;
   }
 }

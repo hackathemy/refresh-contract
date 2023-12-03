@@ -1,12 +1,13 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./ProjectToken.sol";
 
-contract MyProtocol is CCIPReceiver {
+contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
   // public make a getter function for this argument
   bytes32 public latestMessageId; // Store the last received messageId.
   string public latestMessage;
@@ -38,21 +39,32 @@ contract MyProtocol is CCIPReceiver {
 
   /// handle a received message
   function _ccipReceive(
-    Client.Any2EVMMessage memory any2EvmMessage
+    Client.Any2EVMMessage memory receivedMessage
   ) internal override {
-    latestMessageId = any2EvmMessage.messageId; // fetch the messageId
-    latestMessage = abi.decode(any2EvmMessage.data, (string)); // abi-decoding of the sent text
-    // Expect one token to be transferred at once, but you can transfer several tokens.
-    // 이미 그 주소로 전송된 거랑 이거랑 별개인듯..?
-    lastReceivedTokenAddress = any2EvmMessage.destTokenAmounts[0].token;
-    lastReceivedTokenAmount = any2EvmMessage.destTokenAmounts[0].amount;
+    // check index
+    // TODO: revert 필요 -> 만약 없는 프로젝트 인덱스를 고른 경우
+    string memory receivedStringIndex = abi.decode(
+      receivedMessage.data,
+      (string)
+    );
+    uint receivedProjectIndex = stringToUint(receivedStringIndex);
 
-    // mint here
+    // check token amount & sender
+    uint256 mintAmount = receivedMessage.destTokenAmounts[0].amount;
+    address funder = abi.decode(receivedMessage.sender, (address));
 
-    // Function to mint new tokens, can only be called by the owner
-    // function mint(address account, uint256 amount) external onlyOwner {
-    //   _mint(account, amount);
-    // }
+    // mint a test token to funder
+    ProjectToken(payable(projects[receivedProjectIndex].tokenAddress)).mint(
+      funder,
+      mintAmount
+    );
+
+    // store state
+    // TODO: if it's not variable, we don't store this state at our contract
+    latestMessageId = receivedMessage.messageId;
+    latestMessage = receivedStringIndex;
+    lastReceivedTokenAddress = receivedMessage.destTokenAmounts[0].token;
+    lastReceivedTokenAmount = receivedMessage.destTokenAmounts[0].amount;
   }
 
   // create a new prject and mint erc20votes
@@ -81,6 +93,13 @@ contract MyProtocol is CCIPReceiver {
       _contentURI,
       address(newToken)
     );
+  }
+
+  // getter function to find out project erc20 token contract address for users
+  function getProjectsTokenContract(
+    uint _projectIndex
+  ) external view returns (address) {
+    return projects[_projectIndex].tokenAddress;
   }
 
   function getProjectsCount() external view returns (uint) {
@@ -122,5 +141,18 @@ contract MyProtocol is CCIPReceiver {
       lastReceivedTokenAddress,
       lastReceivedTokenAmount
     );
+  }
+
+  // temp
+  function stringToUint(string memory s) public pure returns (uint) {
+    bytes memory b = bytes(s);
+    uint result = 0;
+    for (uint256 i = 0; i < b.length; i++) {
+      uint256 c = uint256(uint8(b[i]));
+      if (c >= 48 && c <= 57) {
+        result = result * 10 + (c - 48);
+      }
+    }
+    return result;
   }
 }
