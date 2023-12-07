@@ -1,5 +1,5 @@
 const { networks } = require("../networks");
-const contractName = "CCIPTokenSender";
+const contractName = "RefreshFunding";
 
 /**
  * npx hardhat task...
@@ -42,5 +42,8 @@ task(
 
   console.log(`\n__Deploying Contract__ : ${contractName}.sol`);
   console.log(`${contractName} contract is just created on the ${networkName}. 
-  Contract Address: ${contract.address}`);
+  Contract Address: ${contract.address}
+  Explorer: ${networks[network.name].explorer(
+    contract.deployTransaction.hash,
+  )}`);
 });

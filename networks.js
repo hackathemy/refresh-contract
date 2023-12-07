@@ -62,12 +62,10 @@ const networks = {
     url: process.env.AVALANCHE_FUJI_RPC_URL || "THIS HAS NOT BEEN SET",
     router: "0x554472a2720e5e7d5d3c817529aba05eed5f82d8",
     chainSelector: "14767482510784806043",
-    gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    verifyApiKey: "THIS HAS NOT BEEN SET",
+    verifyApiKey: "snowtrace", // not required
     chainId: 43113,
-    confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
-    nativeCurrencySymbol: "MATIC",
+    nativeCurrencySymbol: "AVAX",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
     explorer: (txHash) => {
@@ -84,7 +82,7 @@ const networks = {
       process.env.POLYGON_MUMBAI_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
     chainId: 80001,
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
-    nativeCurrencySymbol: "AVAX",
+    nativeCurrencySymbol: "MATIC",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
     explorer: (txHash) => {

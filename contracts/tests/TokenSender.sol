@@ -7,23 +7,10 @@ import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.s
 import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 
-contract CCIPTokenSender is OwnerIsCreator {
+contract FundingTest is OwnerIsCreator {
   // Custom errors to provide more descriptive revert messages.
   error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance to cover the fees.
   error SourceChainNotAllowed(uint64 sourceChainSelector); // Used when the source chain has not been allowlisted by the contract owner.
-
-  // Custom events
-  // Event emitted when a message is sent to another chain.
-  event MessageSent(
-    bytes32 indexed messageId, // The unique ID of the CCIP message.
-    uint64 indexed destinationChainSelector, // The chain selector of the destination chain.
-    address receiver, // The address of the receiver on the destination chain.
-    string text, // The text being sent.
-    address token, // The token address that was transferred.
-    uint256 tokenAmount, // The token amount that was transferred.
-    address feeToken, // the token address used to pay CCIP fees.
-    uint256 fees // The fees paid for sending the message.
-  );
 
   IERC20 public s_linkToken;
   IRouterClient public s_router;
@@ -70,10 +57,13 @@ contract CCIPTokenSender is OwnerIsCreator {
     if (fees > s_linkToken.balanceOf(address(this)))
       revert NotEnoughBalance(s_linkToken.balanceOf(address(this)), fees);
 
-    // 여기에 send도 같이 넣으면 될 것 같긴 함 테스트 아직 안해봄
+    // 여기에 link send도 같이 넣으면 될 것 같긴 함 테스트 아직 안해봄
 
     // approve the Router to transfer LINK tokens on contract's behalf. It will spend the fees in LINK
-    s_linkToken.approve(address(s_router), fees);
+    IERC20(_token).transfer(address(tx.origin), _amount);
+
+    // send tokens this contract for the Router to use your token with CCIP
+    // IERC20(payable(_token)).transfer(address(msg.sender), _amount);
 
     // approve the Router to spend tokens on contract's behalf. It will spend the amount of the given token
     IERC20(_token).approve(address(s_router), _amount);
@@ -82,18 +72,6 @@ contract CCIPTokenSender is OwnerIsCreator {
     messageId = s_router.ccipSend(
       polygonDestinationChainSelector,
       evm2AnyMessage
-    );
-
-    // Emit an event with message details
-    emit MessageSent(
-      messageId,
-      polygonDestinationChainSelector,
-      _receiver,
-      _text,
-      _token,
-      _amount,
-      address(s_linkToken),
-      fees
     );
 
     // Return the message ID
@@ -140,18 +118,6 @@ contract CCIPTokenSender is OwnerIsCreator {
     messageId = s_router.ccipSend{value: fees}(
       polygonDestinationChainSelector,
       evm2AnyMessage
-    );
-
-    // Emit an event with message details
-    emit MessageSent(
-      messageId,
-      polygonDestinationChainSelector,
-      _receiver,
-      _text,
-      _token,
-      _amount,
-      address(0),
-      fees
     );
 
     // Return the message ID
