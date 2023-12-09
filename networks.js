@@ -89,6 +89,23 @@ const networks = {
       return `https://mumbai.polygonscan.com/tx/${txHash}`;
     },
   },
+  bnb: {
+    url: process.env.BNB_TESTNET_RPC_URL || "THIS HAS NOT BEEN SET",
+    router: "0x9527e2d01a3064ef6b50c1da1c0cc523803bcff2",
+    chainSelector: "13264668187771770619",
+    gasPrice: undefined,
+    accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+    verifyApiKey:
+      process.env.POLYGON_MUMBAI_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
+    chainId: 97,
+    confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
+    nativeCurrencySymbol: "tBNB",
+    linkToken: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06",
+    bnmToken: "0xbfa2acd33ed6eec0ed3cc06bf1ac38d22b36b9e9",
+    explorer: (txHash) => {
+      return `https://testnet.bscscan.com/tx/${txHash}`;
+    },
+  },
 };
 
 module.exports = {
