@@ -63,7 +63,6 @@ contract RefreshProtocol is CCIPReceiver, ZKPVerifier {
     address tokenAddress; // Added to store the token contract address
   }
 
-  IERC20 public token;
   mapping(uint256 => uint256) public idMap;
 
   uint64 public totalVotes = 0;
@@ -241,8 +240,8 @@ contract RefreshProtocol is CCIPReceiver, ZKPVerifier {
 
     if (requestId == WITHDRAW_REQUEST_ID) {
       // TODO: 테스트 필요
-      // uint256 contractBalance = token.balanceOf(address(this));
-      // token.transfer(builder, contractBalance);
+      uint256 fundedAmount = IERC20(BNM_TOKEN).totalSupply();
+      IERC20(BNM_TOKEN).transfer(_msgSender(), fundedAmount);
     }
   }
 
