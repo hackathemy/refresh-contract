@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.16;
 
 contract Encode {
   function encode(string memory _string1) public pure returns (bytes memory) {
