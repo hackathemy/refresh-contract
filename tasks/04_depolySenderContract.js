@@ -8,7 +8,7 @@ const contractName = "RefreshFunding";
  */
 task(
   "setup-sender",
-  `deploy sender ${contractName} contract on the network which you select by --network flag`,
+  `Deploy RefreshFunding(sender) contract on the network which you select by --network flag`,
 ).setAction(async (taskArgs, hre) => {
   const networkName = network.name;
 

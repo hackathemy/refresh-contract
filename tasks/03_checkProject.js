@@ -1,17 +1,9 @@
 const { networks } = require("../networks");
 const contractName = "RefreshProtocol";
 
-/**
- * npx hardhat task...
- * @param1 task name (example: in this code, task name is "setup-sender")
- * @param2 task description (example: in this code, task description is "deploy Sender.sol")
- *
- * @flag network.name depends on a flag, --network <name>
- */
-// TODO: need to change setup-receiver description
 task(
   "check-project",
-  `deploy sender ${contractName} contract on the network which you select by --network flag`,
+  `Check a created sample project on our protocol contract in polygon mumbai`,
 ).setAction(async (taskArgs, hre) => {
   if (network.name === "hardhat") {
     // throw Error(

@@ -1,6 +1,6 @@
 const { networks } = require("../networks");
 
-task("faucet-link", `faucet link token to funding contract`)
+task("faucet-link", `Drip link token to our funding contract in source chain`)
   .addParam("amount", "faucet amount")
   .setAction(async (taskArgs, hre) => {
     let { amount } = taskArgs;

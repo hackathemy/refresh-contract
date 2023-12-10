@@ -10,7 +10,7 @@ const contractName = "CCIPSender_Custom";
  */
 task(
   "setup-sender-all",
-  "deploy sender contract in each network without polygon chain",
+  "Deploy RefreshFunding(sender) contract in each network without polygon chain",
 )
   .addParam("all", "address of CCIP contract to read")
   .setAction(async (taskArgs, hre) => {

@@ -3,7 +3,7 @@ const contractName = "RefreshFunding";
 
 task(
   "check-allowance",
-  `deploy sender ${contractName} contract on the network which you select by --network flag`,
+  `Check allowance amount for funding contract in source chain`,
 ).setAction(async (taskArgs, hre) => {
   console.log(`\n__Selected Network__ : ${network.name}
 The network will be used for deploying receiver contract

@@ -11,7 +11,7 @@ const contractName = "RefreshProtocol";
 // TODO: need to change setup-receiver description
 task(
   "setup-receiver",
-  `deploy sender ${contractName} contract on the network which you select by --network flag`,
+  `Deploy RefreshProtocol(receiver) contract on the network which you select by --network flag`,
 ).setAction(async (taskArgs, hre) => {
   if (network.name === "hardhat") {
     // throw Error(

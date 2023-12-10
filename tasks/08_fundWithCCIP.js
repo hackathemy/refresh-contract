@@ -1,7 +1,10 @@
 const { networks } = require("../networks");
 const contractName = "RefreshFunding";
 
-task("fund-with-ccip", `funding with CCIP`)
+task(
+  "fund-with-ccip",
+  `Fund a project from source chain to destination chain by using CCIP`,
+)
   .addParam("amount", "funding amount")
   .setAction(async (taskArgs, hre) => {
     console.log(`\n__Selected Network__ : ${network.name}

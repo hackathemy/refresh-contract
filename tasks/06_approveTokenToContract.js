@@ -1,7 +1,10 @@
 const { networks } = require("../networks");
 const contractName = "RefreshFunding";
 
-task("approve-token", `approve token for funding contract`)
+task(
+  "approve-token",
+  `Approve BnM token to transferFrom funding contract in source chain`,
+)
   .addParam("amount", "funding amount")
   .setAction(async (taskArgs, hre) => {
     let { amount } = taskArgs;
