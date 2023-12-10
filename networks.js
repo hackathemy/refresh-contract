@@ -68,6 +68,7 @@ const networks = {
     nativeCurrencySymbol: "AVAX",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
+    fundingContract: "0xe25cd046aB8F15b37Eb9C585bB47F38FcC2B9877",
     explorer: (txHash) => {
       return `https://testnet.snowtrace.io/tx/${txHash}`;
     },
@@ -85,7 +86,8 @@ const networks = {
     nativeCurrencySymbol: "MATIC",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40",
-    // bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
+    protocol: "0xBB8f495727c4Fd1Ece1b97e2e068De892227B2B7",
+    zkverifier: "0xCF05E6E601330a025557101f24fE5DD24002d05C",
     explorer: (txHash) => {
       return `https://mumbai.polygonscan.com/tx/${txHash}`;
     },
@@ -97,12 +99,13 @@ const networks = {
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
     verifyApiKey:
-      process.env.POLYGON_MUMBAI_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
+      process.env.BNB_TESTNET_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
     chainId: 97,
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "tBNB",
     linkToken: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06",
     bnmToken: "0xbfa2acd33ed6eec0ed3cc06bf1ac38d22b36b9e9",
+    fundingContract: "0x337A02e1757E66084820E7c7bB6ef99c7bbf7D0C",
     explorer: (txHash) => {
       return `https://testnet.bscscan.com/tx/${txHash}`;
     },
@@ -120,6 +123,7 @@ const networks = {
     nativeCurrencySymbol: "ETH",
     linkToken: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
     bnmToken: "0xaBfE9D11A2f1D61990D1d253EC98B5Da00304F16",
+    fundingContract: "0xd6EC03DE92b00A58204A020b721705114A724E00",
     explorer: (txHash) => {
       return `https://goerli-optimism.etherscan.io/tx/${txHash}`;
     },

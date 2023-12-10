@@ -218,7 +218,7 @@ contract RefreshFunding is OwnerIsCreator {
         tokenAmounts: tokenAmounts, // The amount and type of token being transferred
         extraArgs: Client._argsToBytes(
           // Additional arguments, setting gas limit and non-strict sequencing mode
-          Client.EVMExtraArgsV1({gasLimit: 200_000, strict: false})
+          Client.EVMExtraArgsV1({gasLimit: 300_000, strict: false})
         ),
         // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
         feeToken: _feeTokenAddress

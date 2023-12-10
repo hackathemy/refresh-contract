@@ -18,7 +18,7 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.16",
+        version: "0.8.19",
         settings: SOLC_SETTINGS,
       },
     ],
@@ -35,6 +35,7 @@ module.exports = {
       sepolia: networks.sepolia.verifyApiKey,
       avalancheFujiTestnet: networks.fuji.verifyApiKey,
       polygonMumbai: networks.mumbai.verifyApiKey,
+      bscTestnet: networks.bnb.verifyApiKey,
     },
   },
   gasReporter: {
