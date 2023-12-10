@@ -1,6 +1,9 @@
+exports.setupReceiver = require("./00_depolySenderContractAll");
 exports.setupReceiver = require("./01_deployReceiverContract");
-exports.setupReceiver = require("./02_depolySenderContract");
-exports.setupReceiver = require("./02_depolySenderContractAll");
-exports.setupReceiver = require("./03_fundLink");
-exports.setupReceiver = require("./04_transferTokenWithCCIP");
-exports.setupReceiver = require("./05_readMessage");
+exports.setupReceiver = require("./02_setupProject");
+exports.setupReceiver = require("./03_checkProject");
+exports.setupReceiver = require("./04_depolySenderContract");
+exports.setupReceiver = require("./05_faucetLinkToken");
+exports.setupReceiver = require("./06_approveTokenToContract");
+exports.setupReceiver = require("./07_checkAllowance");
+exports.setupReceiver = require("./08_fundWithCCIP");

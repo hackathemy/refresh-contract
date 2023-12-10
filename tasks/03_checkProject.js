@@ -10,7 +10,7 @@ const contractName = "RefreshProtocol";
  */
 // TODO: need to change setup-receiver description
 task(
-  "setup-receiver",
+  "check-project",
   `deploy sender ${contractName} contract on the network which you select by --network flag`,
 ).setAction(async (taskArgs, hre) => {
   if (network.name === "hardhat") {
@@ -40,29 +40,17 @@ The account currently has ${balanceInEth} ${
     networks[network.name].nativeCurrencySymbol
   }`);
 
-  const ROUTER = networks[network.name].router;
-  if (!ROUTER) {
-    throw Error("Missing Router Address");
-  }
-
   console.log("\n__Compiling Contracts__");
   await run("compile");
 
-  console.log(`\n__Deploying Contract__
-Deploying Sender.sol to ${network.name}...
-Please wait for a while to mine your tx`);
-
-  const zkVerifier = networks[network.name].zkverifier;
-
+  const protocolAddress = networks[network.name].protocol;
   const receiverFactory = await ethers.getContractFactory(contractName);
-  const receiverContract = await receiverFactory.deploy(ROUTER, zkVerifier);
-  await receiverContract.deployTransaction.wait(1);
+  const receiver = await receiverFactory.attach(protocolAddress);
 
-  // TODO: change logs
-  console.log(`\n__Deployed Contract__
-Reciver contract is deployed to ${network.name} at ${receiverContract.address}
-Explorer: ${networks[network.name].explorer(
-    receiverContract.deployTransaction.hash,
-  )}
-`);
+  const tx = await receiver.projects(1);
+  console.log(tx);
+  // console.log(`\n__Deployed Contract__
+  // Reciver contract is deployed to ${network.name} at ${receiverContract.address}
+  // Explorer: ${networks[network.name].explorer(tx.hash)}
+  // `);
 });
