@@ -68,11 +68,15 @@ contract RefreshProtocol is CCIPReceiver, ZKPVerifier {
   uint64 public totalVotes = 0;
   uint256 public votesTheshhold;
 
+  address public zkVerifier;
+
   mapping(address => bool) public allowlistedBuilder;
   mapping(uint => Project) public projects;
   uint latestProjectIndex;
 
-  constructor(address router) CCIPReceiver(router) {}
+  constructor(address router, address _zkVerifier) CCIPReceiver(router) {
+    zkVerifier = _zkVerifier;
+  }
 
   /* Modifier */
   modifier onlyAllowlistedBuilder(address _builder) {
@@ -118,6 +122,8 @@ contract RefreshProtocol is CCIPReceiver, ZKPVerifier {
       funder,
       amount
     );
+
+    IERC20(token).transfer(zkVerifier, amount);
   }
 
   // create a new prject and mint erc20votes

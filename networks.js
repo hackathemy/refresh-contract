@@ -84,7 +84,8 @@ const networks = {
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "MATIC",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
-    bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
+    bnmToken: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40",
+    // bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
     explorer: (txHash) => {
       return `https://mumbai.polygonscan.com/tx/${txHash}`;
     },
@@ -104,6 +105,40 @@ const networks = {
     bnmToken: "0xbfa2acd33ed6eec0ed3cc06bf1ac38d22b36b9e9",
     explorer: (txHash) => {
       return `https://testnet.bscscan.com/tx/${txHash}`;
+    },
+  },
+  optimism: {
+    url: process.env.OPTIMISM_GOERLI_RPC_URL || "THIS HAS NOT BEEN SET",
+    router: "0xcc5a0b910d9e9504a7561934bed294c51285a78d",
+    chainSelector: "2664363617261496610",
+    gasPrice: undefined,
+    accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+    verifyApiKey:
+      process.env.POLYGON_MUMBAI_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
+    chainId: 420,
+    confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
+    nativeCurrencySymbol: "ETH",
+    linkToken: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
+    bnmToken: "0xaBfE9D11A2f1D61990D1d253EC98B5Da00304F16",
+    explorer: (txHash) => {
+      return `https://goerli-optimism.etherscan.io/tx/${txHash}`;
+    },
+  },
+  base: {
+    url: process.env.BASE_GOERLI_RPC_URL || "THIS HAS NOT BEEN SET",
+    router: "0xcc5a0b910d9e9504a7561934bed294c51285a78d",
+    chainSelector: "2664363617261496610",
+    gasPrice: undefined,
+    accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+    verifyApiKey:
+      process.env.POLYGON_MUMBAI_VERIFY_API_KEY || "THIS HAS NOT BEEN SET",
+    chainId: 84531,
+    confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
+    nativeCurrencySymbol: "ETH",
+    linkToken: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
+    bnmToken: "0xaBfE9D11A2f1D61990D1d253EC98B5Da00304F16",
+    explorer: (txHash) => {
+      return `https://goerli.basescan.org/tx/${txHash}`;
     },
   },
 };
