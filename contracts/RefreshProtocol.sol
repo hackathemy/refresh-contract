@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.16;
 
-import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -10,7 +9,7 @@ import {PrimitiveTypeUtils} from "@iden3/contracts/lib/PrimitiveTypeUtils.sol";
 import {ICircuitValidator} from "@iden3/contracts/interfaces/ICircuitValidator.sol";
 import {ZKPVerifier} from "@iden3/contracts/verifiers/ZKPVerifier.sol";
 
-contract RefreshProtocol is CCIPReceiver, OwnerIsCreator, ZKPVerifier {
+contract RefreshProtocol is CCIPReceiver, ZKPVerifier {
   /* Errors */
   error IndexOutOfBound(uint projectIndex); // Used when the project index is out of bounds.
   error MessageIdNotExist(bytes32 messageId); // Used when the provided message ID does not exist.
@@ -43,6 +42,7 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator, ZKPVerifier {
   // For Polygon ID
   address public constant BNM_TOKEN =
     0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40;
+
   address public zkVerifier;
 
   // types for Message
@@ -231,20 +231,6 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator, ZKPVerifier {
     if (requestId == CREATE_PROJECT_REQUEST_ID) {
       address builder = _msgSender();
       allowlistedBuilder[builder] = true;
-    }
-
-    if (requestId == VOTE_REQUEST_ID) {
-      require(
-        requestId == VOTE_REQUEST_ID && idMap[id] == 0,
-        "proof can not be submitted more than once"
-      );
-      idMap[id] = 1;
-      totalVotes++;
-    }
-
-    if (requestId == WITHDRAW_REQUEST_ID) {
-      uint256 fundedAmount = IERC20(BNM_TOKEN).totalSupply();
-      IERC20(BNM_TOKEN).transfer(_msgSender(), fundedAmount);
     }
   }
 }
