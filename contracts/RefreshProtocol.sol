@@ -1,17 +1,21 @@
 //SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.16;
 
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./ProjectToken.sol";
+import {PrimitiveTypeUtils} from "@iden3/contracts/lib/PrimitiveTypeUtils.sol";
+import {ICircuitValidator} from "@iden3/contracts/interfaces/ICircuitValidator.sol";
+import {ZKPVerifier} from "@iden3/contracts/verifiers/ZKPVerifier.sol";
 
-contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
+contract RefreshProtocol is CCIPReceiver, OwnerIsCreator, ZKPVerifier {
   /* Errors */
   error IndexOutOfBound(uint projectIndex); // Used when the project index is out of bounds.
   error MessageIdNotExist(bytes32 messageId); // Used when the provided message ID does not exist.
   error NoMessageReceived(); // Used when trying to access a message but no messages have been received.
+  error BuilderNotAllowlisted(address builder);
 
   /* Events */
   // Event emitted when a new project is created by builder.
@@ -31,6 +35,11 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
   );
 
   /* States */
+  // For ZK requestss
+  uint64 public constant CREATE_PROJECT_REQUEST_ID = 1;
+  uint64 public constant VOTE_REQUEST_ID = 2;
+  uint64 public constant WITHDRAW_REQUEST_ID = 3;
+
   // For Polygon ID
   address public constant BNM_TOKEN =
     0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40;
@@ -56,6 +65,7 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
     address tokenAddress; // Added to store the token contract address
   }
 
+  mapping(address => bool) public allowlistedBuilder;
   mapping(uint => Project) public projects;
   uint latestProjectIndex;
 
@@ -63,8 +73,13 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
     zkVerifier = _zkVerifier;
   }
 
-  /* Functons */
+  /* Modifier */
+  modifier onlyAllowlistedBuilder(address _builder) {
+    if (!allowlistedBuilder[_builder]) revert BuilderNotAllowlisted(_builder);
+    _;
+  }
 
+  /* Functons */
   /// handle a received message
   function _ccipReceive(
     Client.Any2EVMMessage memory receivedMessage
@@ -110,7 +125,7 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
     string calldata _contentURI,
     string calldata tokenName,
     string calldata tokenSymbol
-  ) external {
+  ) external onlyAllowlistedBuilder(msg.sender) {
     // Increment the index to get a new unique index for the project
     latestProjectIndex++;
 
@@ -190,4 +205,46 @@ contract RefreshProtocol is CCIPReceiver, OwnerIsCreator {
   /// @dev This function has no function body, making it a default function for receiving Ether.
   /// It is automatically called when Ether is sent to the contract without any data.
   receive() external payable {}
+
+  /* ZK Implecations */
+  function _beforeProofSubmit(
+    uint64 /* requestId */,
+    uint256[] memory inputs,
+    ICircuitValidator validator
+  ) internal view override {
+    // check that  challenge input is address of sender
+    address addr = PrimitiveTypeUtils.int256ToAddress(
+      inputs[validator.inputIndexOf("challenge")]
+    );
+    // this is linking between msg.sender and
+    require(_msgSender() == addr, "address in proof is not a sender address");
+  }
+
+  function _afterProofSubmit(
+    uint64 requestId,
+    uint256[] memory inputs,
+    ICircuitValidator validator
+  ) internal override {
+    // get user id
+    uint256 id = inputs[1];
+
+    if (requestId == CREATE_PROJECT_REQUEST_ID) {
+      address builder = _msgSender();
+      allowlistedBuilder[builder] = true;
+    }
+
+    if (requestId == VOTE_REQUEST_ID) {
+      require(
+        requestId == VOTE_REQUEST_ID && idMap[id] == 0,
+        "proof can not be submitted more than once"
+      );
+      idMap[id] = 1;
+      totalVotes++;
+    }
+
+    if (requestId == WITHDRAW_REQUEST_ID) {
+      uint256 fundedAmount = IERC20(BNM_TOKEN).totalSupply();
+      IERC20(BNM_TOKEN).transfer(_msgSender(), fundedAmount);
+    }
+  }
 }
